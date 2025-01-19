@@ -3,6 +3,7 @@ import { logger, connectDB } from "@/config";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { accountRoute, budgetRoute, currencyRoute } from "./routes";
+import { recordRoute } from "./routes/record.route";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ const apiRouter = express.Router();
 apiRouter.use("/account", accountRoute);
 apiRouter.use("/budget", budgetRoute);
 apiRouter.use("/currency", currencyRoute);
+apiRouter.use("/record", recordRoute);
 
 // Prefix all routes with /v1/api
 app.use("/v1/api", apiRouter);
