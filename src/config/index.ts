@@ -1,3 +1,4 @@
 import logger from "./logger.config";
 import connectDB from "./db.config";
-export { logger, connectDB };
+import transporter from "./email.config";
+export { logger, connectDB, transporter };
