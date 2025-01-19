@@ -32,10 +32,11 @@ export const getBudgets = async (req: Request, res: Response) => {
         const remainingAmount = amount - totalAmount;
 
         // Check if the budget is exceeded
-                const isExceeded = remainingAmount < 0;
-                const accountName = (budget.accounts?.[0] as any)?.name || budget.budgetFor;
-                // Check if the budget is overdue
-                const isOverdue = moment().isAfter(moment(endDate));
+        const isExceeded = remainingAmount < 0;
+        const accountName =
+          (budget.accounts?.[0] as any)?.name || budget.budgetFor;
+        // Check if the budget is overdue
+        const isOverdue = moment().isAfter(moment(endDate));
 
         return {
           _id,
