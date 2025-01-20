@@ -43,6 +43,7 @@ export const createRecord = async (req: Request, res: Response) => {
       location,
       label,
     } = req.body;
+    console.log(req.body);
 
     const recordData = {
       type,
@@ -68,29 +69,39 @@ export const createRecord = async (req: Request, res: Response) => {
     }).session(session);
 
     // Check if the account has sufficient funds for the transaction
-    if (type === "expense" || type === "Transfer") {
+    if (type === "transfer") {
+      const fromAccountDetails = accounts.find(
+        (acc) => acc._id.equals(fromAccount)
+      );
+      if (!fromAccountDetails || fromAccountDetails.currentBalance < amount) {
+        throw new Error("Insufficient funds in the From Account for this transfer.");
+      }
+    } else if (type === "expense") {
       const expenseAccount = accounts.find(
-        (acc) => acc._id.equals(account) || acc._id.equals(fromAccount)
+        (acc) => acc._id.equals(account)
       );
       if (!expenseAccount || expenseAccount.currentBalance < amount) {
-        throw new Error("Insufficient funds");
+        throw new Error("Insufficient funds for this expense.");
       }
     }
 
     // Update the account balances
     for (const acc of accounts) {
-      if (acc._id.equals(account)) {
-        if (type === "expense") {
+      if (type === "transfer") {
+        if (acc._id.equals(fromAccount)) {
           acc.currentBalance -= amount;
-        } else if (type === "income") {
+        }
+        if (acc._id.equals(toAccount)) {
           acc.currentBalance += amount;
         }
-      }
-      if (acc._id.equals(fromAccount)) {
-        acc.currentBalance -= amount;
-      }
-      if (acc._id.equals(toAccount)) {
-        acc.currentBalance += amount;
+      } else {
+        if (acc._id.equals(account)) {
+          if (type === "expense") {
+            acc.currentBalance -= amount;
+          } else if (type === "income") {
+            acc.currentBalance += amount;
+          }
+        }
       }
       await acc.save();
     }
