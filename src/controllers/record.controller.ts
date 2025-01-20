@@ -198,7 +198,7 @@ export const deleteRecord = async (req: Request, res: Response) => {
 // recent transaction 4 latest
 export const recentRecord = async (req: Request, res: Response) => {
   try {
-    const records = await Record.find().sort({ date: -1 }).limit(4);
+    const records = await Record.find().sort({ date: 1 }).limit(4);
     console.log(records);
     res.status(200).json(records);
   } catch (error: any) {
